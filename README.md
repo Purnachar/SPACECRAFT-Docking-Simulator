@@ -13,7 +13,7 @@ The player controls a spacecraft and attempts to safely approach and dock with a
 1. Download the latest **`Spacecraft_Docking_Simulator_Windows.zip`** from the GitHub Releases section.
 2. Extract the ZIP file.
 3. Open the extracted `Spacecraft_Docking_Simulator` folder.
-4. Double-click **`Spacecraft_Docking_Simulator.exe`**.
+4. Double-click **`Spacecraft_Docking.exe`**.
 5. The game will start.
 6. Choose **Easy**, **Medium**, or **Hard**.
 7. Follow the on-screen docking guidance and controls.
