@@ -22,6 +22,8 @@ The player controls a spacecraft and attempts to safely approach and dock with a
 
 Keep the `.exe` and `stage11_space_background.bmp` in the same folder.
 
+"" TRY TO KEEP THE ORIGINAL WINDOW SIZE IT OPENS IN INSTEAD OF MAXIMIZING IT.""
+
 If Windows displays a security warning for an application downloaded from the internet, verify that the file came from this project's official GitHub repository/release before choosing whether to run it.
 
 ---
