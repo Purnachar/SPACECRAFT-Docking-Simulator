@@ -5,27 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// SPACECRAFT DOCKING SIMULATOR - STAGE 11
-// Improvements over Stage 5:
-// 1. Removed the odd second yellow angle line.
-// 2. One clean docking-corridor guide remains.
-// 3. Added a final-approach docking envelope.
-// 4. Added distance-based approach guidance.
-// 5. Added braking-distance estimation.
-// 6. Added clearer velocity-vector guidance.
-// 7. Added a soft final-approach speed target.
-// 8. Docking still accepts any tail orientation within the
-//    alignment tolerance; it is NOT restricted to exactly 180°.
-// 9. Redesigned spacecraft rear: two side-mounted propulsion
-//    pods with the rear-center reserved for docking.
-// 10. Rear engine flames are separated from the docking guide.
-// Stage 8: final mechanics pass.
-// 11. Relative lateral velocity is measured at the rear docking port.
-// 12. Docking quality depends on contact speed, lateral speed and alignment.
-// 13. Excessive lateral speed / misalignment can cause a docking collision.
-// 14. Fuel level reduces available thrust at low fuel.
-// 15. Docking uses CONTACT -> CLAMPS -> LOCKED sequence.
-// 16. Mission time and a more meaningful final score are tracked.
+
 const int WINDOW_WIDTH = 1100;
 const int WINDOW_HEIGHT = 720;
 // SPACECRAFT
@@ -403,9 +383,7 @@ void drawSceneLightEffects()
 
 void drawSun()
 {
-    // Visual-only distant sun: mostly outside the upper-left corner so it
-    // reads as the scene's light source instead of a yellow ball floating
-    // beside the spacecraft.
+   
     const float sx = -18.0f;
     const float sy = 700.0f;
 
@@ -1011,9 +989,7 @@ void limitSpeed()
 // PHYSICS
 void updatePhysics(float dt)
 {
-    // --------------------------------------------------------
     // DOCKING SEQUENCE
-    // --------------------------------------------------------
 
     if (gameState == 3 || gameState == 4)
     {
@@ -1026,9 +1002,7 @@ void updatePhysics(float dt)
 
     missionTime += dt;
 
-    // --------------------------------------------------------
     // ROTATION
-    // --------------------------------------------------------
 
     float rotationSpeed = 80.0f;
 
@@ -1044,9 +1018,7 @@ void updatePhysics(float dt)
     if (shipAngle < 0.0f)
         shipAngle += 360.0f;
 
-    // --------------------------------------------------------
     // FORWARD THRUST
-    // --------------------------------------------------------
 
     if (thrustForward && fuel > 0.0f)
     {
@@ -1072,9 +1044,7 @@ void updatePhysics(float dt)
         fuel -= THRUST_FUEL_RATE * dt;
     }
 
-    // --------------------------------------------------------
     // REVERSE THRUST
-    // --------------------------------------------------------
 
     if (thrustBackward && fuel > 0.0f)
     {
@@ -1100,9 +1070,7 @@ void updatePhysics(float dt)
         fuel -= THRUST_FUEL_RATE * 0.7f * dt;
     }
 
-    // --------------------------------------------------------
     // MANUAL BRAKING
-    // --------------------------------------------------------
 
     if (braking)
     {
@@ -1132,23 +1100,17 @@ void updatePhysics(float dt)
         }
     }
 
-    // --------------------------------------------------------
     // VERY SMALL SPACE DRAG
-    // --------------------------------------------------------
 
     velocityX *= powf(SPACE_DRAG, dt * 60.0f);
     velocityY *= powf(SPACE_DRAG, dt * 60.0f);
 
-    // --------------------------------------------------------
     // POSITION
-    // --------------------------------------------------------
 
     shipX += velocityX * dt * 60.0f;
     shipY += velocityY * dt * 60.0f;
 
-    // --------------------------------------------------------
     // BOUNDARIES
-    // --------------------------------------------------------
 
     if (shipX < 80.0f)
     {
@@ -1177,9 +1139,7 @@ void updatePhysics(float dt)
     if (fuel < 0.0f)
         fuel = 0.0f;
 
-    // --------------------------------------------------------
     // DATA
-    // --------------------------------------------------------
 
     limitSpeed();
     updateDistance();
@@ -1188,10 +1148,7 @@ void updatePhysics(float dt)
     updateApproachSpeed();
     updateRelativeVelocity();
     updateApproachPrediction();
-
-    // --------------------------------------------------------
     // DOCKING / COLLISION
-    // --------------------------------------------------------
 
     if (dockingDistance <= DOCKING_ZONE)
     {
@@ -1298,9 +1255,6 @@ void calculateScore()
         missionScore = 100;
 }
 // DOCKING CORRIDOR
-// The old angle-indicator line has deliberately been removed.
-// There is now only one clean guidance corridor from the
-// spacecraft's actual rear port to the station.
 void drawDockingCorridor()
 {
     if (gameState != 0 || dockingDistance > GUIDANCE_ZONE)
@@ -1894,8 +1848,6 @@ void drawSpacecraft()
     drawCircleOutline(-58,0,10,24);
 
     // FINAL VISUAL LIGHT PASS
-    // Warm sun-facing edge and cool underside are purely visual. They do not
-    // affect physics, collision, docking, or the spacecraft coordinates.
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -1972,9 +1924,7 @@ void drawHUD()
 
     char text[120];
 
-    // --------------------------------------------------------
     // TITLE
-    // --------------------------------------------------------
 
     glColor3f(
         0.30f,
@@ -1988,10 +1938,7 @@ void drawHUD()
         "SPACECRAFT DOCKING SIMULATOR - STAGE 11"
     );
 
-    // --------------------------------------------------------
     // STATUS
-    // --------------------------------------------------------
-
     if (gameState == 1)
     {
         glColor3f(
@@ -2066,17 +2013,13 @@ void drawHUD()
         }
     }
 
-    // --------------------------------------------------------
     // DIFFICULTY
-    // --------------------------------------------------------
 
     sprintf(text, "DIFFICULTY: %s", difficultyName);
     glColor3f(1.0f, 0.85f, 0.25f);
     DrawText(780, 675, text);
 
-    // --------------------------------------------------------
     // FUEL
-    // --------------------------------------------------------
 
     sprintf(
         text,
@@ -2096,9 +2039,7 @@ void drawHUD()
         text
     );
 
-    // --------------------------------------------------------
     // DISTANCE
-    // --------------------------------------------------------
 
     sprintf(
         text,
@@ -2112,9 +2053,7 @@ void drawHUD()
         text
     );
 
-    // --------------------------------------------------------
     // ALIGNMENT
-    // --------------------------------------------------------
 
     sprintf(
         text,
@@ -2145,9 +2084,7 @@ void drawHUD()
         text
     );
 
-    // --------------------------------------------------------
     // APPROACH SPEED
-    // --------------------------------------------------------
 
     sprintf(
         text,
@@ -2178,9 +2115,7 @@ void drawHUD()
         text
     );
 
-    // --------------------------------------------------------
     // TOTAL VELOCITY
-    // --------------------------------------------------------
 
     sprintf(
         text,
@@ -2220,9 +2155,7 @@ void drawHUD()
         DrawText(30, 435, "LOW FUEL - THRUST LIMITED");
     }
 
-    // --------------------------------------------------------
     // ALIGNMENT STATUS
-    // --------------------------------------------------------
 
     if (isAligned())
     {
@@ -2253,10 +2186,7 @@ void drawHUD()
         );
     }
 
-    // --------------------------------------------------------
     // BRAKING STATUS
-    // --------------------------------------------------------
-
     if (braking)
     {
         glColor3f(
@@ -2302,15 +2232,13 @@ void drawHUD()
         );
     }
 
-    // --------------------------------------------------------
+ 
     // SPEED GAUGE
-    // --------------------------------------------------------
 
     drawSpeedGauge();
 
-    // --------------------------------------------------------
+
     // CONTROLS
-    // --------------------------------------------------------
 
     glColor3f(
         0.7f,
@@ -2330,9 +2258,7 @@ void drawHUD()
         "UP/DOWN: THRUST   LEFT/RIGHT: ROTATE   SPACE: BRAKE   R: RESET   M: MENU   H: HELP"
     );
 
-    // --------------------------------------------------------
     // GUIDANCE
-    // --------------------------------------------------------
 
     if (gameState == 0)
     {
@@ -2471,9 +2397,7 @@ void drawHUD()
         );
     }
 
-    // --------------------------------------------------------
     // DOCKING SEQUENCE
-    // --------------------------------------------------------
 
     if (gameState == 3)
     {
@@ -2490,9 +2414,7 @@ void drawHUD()
         DrawText(700, 95, "DOCKING LOCK IN PROGRESS");
     }
 
-    // --------------------------------------------------------
     // SUCCESS
-    // --------------------------------------------------------
 
     if (gameState == 1)
     {
@@ -2553,9 +2475,7 @@ void drawHUD()
         );
     }
 
-    // --------------------------------------------------------
     // FAILURE
-    // --------------------------------------------------------
 
     if (gameState == 2)
     {
@@ -2580,15 +2500,10 @@ void drawHUD()
     }
 }
 // STAGE 11 - STARTING MENU UI
-// Rebuilt to closely follow the supplied reference UI:
-// centered futuristic console, equal difficulty cards, mission profile,
-// decorative sci-fi frame, and hover-only button highlighting.
 void drawSpaceBackground();
 int loadSpaceBackgroundBMP(const char* filename);
 
 // RESIZE / CENTERING
-// Keep the entire 1100x720 game canvas centered inside any window size.
-// The scene is scaled uniformly and letterboxed when the aspect ratio differs.
 int viewportX = 0;
 int viewportY = 0;
 int viewportW = WINDOW_WIDTH;
@@ -2620,8 +2535,6 @@ void reshape(int w, int h)
     glLoadIdentity();
 }
 
-// Convert actual mouse pixels to the fixed 1100x720 game coordinate system.
-// This keeps mouse hover/click regions aligned with the centered UI after resize.
 void getGameMouseCoordinates(int x, int y, float &mx, float &my)
 {
     int actualW = glutGet(GLUT_WINDOW_WIDTH);
@@ -2883,7 +2796,6 @@ void drawMenuButton(float x, float y, float w, float h,
 
     glDisable(GL_BLEND);
 
-    // Text is centered as one unit, never by separate X coordinates.
     glColor3f(0.88f, 0.96f, 1.0f);
     drawCenteredText(x + w*0.50f, y + h*0.50f - 5.0f, label);
 
@@ -2954,7 +2866,6 @@ void drawMenu()
     glColor3f(0.55f, 0.86f, 1.0f);
     drawCenteredText(550, 585, "MISSION SELECT: CHOOSE YOUR CHALLENGE");
 
-    // Three equal cards, aligned to exactly the same center.
     drawMenuButton(205, 450, 690, 68, "[ 1 ]   EASY", EASY, HOVER_EASY);
     drawMenuButton(205, 355, 690, 68, "[ 2 ]   MEDIUM", MEDIUM, HOVER_MEDIUM);
     drawMenuButton(205, 260, 690, 68, "[ 3 ]   HARD", HARD, HOVER_HARD);
@@ -2996,7 +2907,6 @@ void drawMenu()
     glColor3f(0.40f, 1.0f, 0.55f);
     drawCenteredText(550, 200, "MISSION PROFILE");
 
-    // Three rows use the exact same center line and spacing.
     glColor3f(0.70f, 0.98f, 0.78f);
     drawCenteredText(550, 175, "EASY     -     Learn the controls and docking basics");
     glColor3f(0.78f, 0.88f, 0.98f);
@@ -3345,8 +3255,6 @@ void beginWorldView()
 {
     glPushMatrix();
 
-    // Slight zoom-out gives the scene breathing room while keeping the HUD
-    // in screen coordinates.
     glTranslatef(WINDOW_WIDTH * 0.5f, WINDOW_HEIGHT * 0.5f, 0.0f);
     glScalef(worldZoom, worldZoom, 1.0f);
     glTranslatef(-WINDOW_WIDTH * 0.5f + worldPanX,
@@ -3398,10 +3306,8 @@ void display()
 
 drawHUD();
 
-        // Help is available only inside the simulator.
         drawHelpButton();
 
-        // The result overlay takes over the simulator after success/failure.
         if ((gameState == 1 || gameState == 2) && !helpOpen)
             drawResultOverlay();
 
